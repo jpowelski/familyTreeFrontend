@@ -1,10 +1,31 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {RouterLink, RouterOutlet} from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
+  imports: [RouterOutlet, RouterLink],
+  template: `
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card bg-dark my-5">
+            <div class="card-body">
+              <h2 class="card-title text-center text-white py-3">{{ title }}</h2>
+              <ul class="text-center list-inline py-3">
+                <li class="list-inline-item">
+                  <a routerLink="/users" class="btn btn-info">List Users</a>
+                </li>
+                <li class="list-inline-item">
+                  <a routerLink="/adduser" class="btn btn-info">Add User</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  `,
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
