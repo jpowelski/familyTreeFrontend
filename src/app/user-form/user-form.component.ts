@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {UserService} from '../user.service';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {User} from '../user';
 import {UserSexSelectComponent} from '../user-sex-select/user-sex-select.component';
-import {NgIf} from '@angular/common';
+import {JsonPipe, NgIf} from '@angular/common';
 import {UserDto} from './userDto';
+import {UserFilterSelectComponent} from '../user-filter-select/user-filter-select.component';
 
 @Component({
   selector: 'app-user-form',
@@ -19,19 +19,22 @@ import {UserDto} from './userDto';
           <input id="last-name" type="text" formControlName="lastName"/>
           <label for="age">Wiek: </label>
           <input id="age" type="number" formControlName="age"/>
-          <user-sex-select formControlName="userSex" placeholder="Wybierz płeć" label="Płeć">
+          <user-sex-select formControlName="sex" placeholder="Wybierz płeć" label="Płeć">
           </user-sex-select>
-          <div *ngIf="userForm.get('userSex')?.invalid && userForm.get('userSex')?.touched" class="error">
+          <div *ngIf="userForm.get('sex')?.invalid && userForm.get('sex')?.touched" class="error">
             Płeć jest wymagana
           </div>
+          <user-filter-select formControlName="fatherUserId" placeholder="Wybierz ojca" label="Ojciec"></user-filter-select>
+          <user-filter-select formControlName="motherUserId" placeholder="Wybierz matkę" label="Matka"></user-filter-select>
           <p>Wypełnij dane aby aktywować przycisk</p>
+          <p>formularz = {{ userForm.value | json}}</p>
           <button type="submit" [disabled]="!userForm.valid">Submit</button>
         </form>
       </div>
     </div>
   `,
   styleUrls: ['./user-form.component.scss'],
-  imports: [ReactiveFormsModule, UserSexSelectComponent, NgIf]
+  imports: [ReactiveFormsModule, UserSexSelectComponent, NgIf, UserFilterSelectComponent, JsonPipe]
 })
 export class UserFormComponent implements OnInit {
   userForm!: FormGroup;
@@ -44,31 +47,20 @@ export class UserFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
-      id: [null], // Domyślna wartość null
+      id: [null],
       firstName: [''],
       lastName: [''],
-      age: [null], // Domyślna wartość null
-      userSex: [null, Validators.required],
+      age: [null],
+      sex: [null, Validators.required],
+      fatherUserId: [null],
+      motherUserId: [null],
     });
   }
 
   onSubmit() {
-    console.warn(this.userForm.value);
-
     const partialUser: UserDto = this.userForm.value;
 
-    // Bezpośrednie przypisanie, jeśli User pozwala na null
-    // const userToSave: User = partialUser as User; // Asercja typu, bo wiesz, że struktura jest kompatybilna po zmianie interfejsu User
-    // LUB bezpieczniej (jeśli niektóre pola są wymagane w User, a formularz je ma)
-    const userToSave: User = {
-      id: partialUser.id,
-      firstName: partialUser.firstName, // Upewnij się, że nie jest null/undefined, jeśli wymagane
-      lastName: partialUser.lastName,
-      age: partialUser.age,
-      sex: partialUser.userSex,
-    }
-
-    this.userService.save(userToSave).subscribe(() => this.gotoUserList());
+    this.userService.save(partialUser).subscribe(() => this.gotoUserList());
   }
 
   gotoUserList() {

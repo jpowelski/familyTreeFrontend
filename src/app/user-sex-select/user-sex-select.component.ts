@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import {UserSex} from '../user';
 
 export interface EnumOption {
-  key: string; // The enum key, e.g., 'ACTIVE'
-  value: UserSex; // The enum value, e.g., UserSex.ACTIVE ('Active')
-  label: string; // The text to display in the dropdown
+  key: string;
+  value: UserSex;
+  label: string;
 }
 
 @Component({
@@ -41,9 +41,8 @@ export interface EnumOption {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserSexSelectComponent implements ControlValueAccessor, OnInit {
-  @Input() label: string = 'User Status';
-  @Input() placeholder: string = '--- Select Status ---';
-  // @Input() displayKeyAsLabel: boolean = false; // You can keep or remove this if always displaying value
+  @Input() label: string = 'Płeć';
+  @Input() placeholder: string = '--- Wybierz płeć ---';
 
   options: EnumOption[] = [];
   selectedValue: UserSex | null = null;
@@ -55,14 +54,12 @@ export class UserSexSelectComponent implements ControlValueAccessor, OnInit {
   constructor(private cdRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    // Generate options directly from the imported UserSex enum
     this.options = Object.keys(UserSex).map(key => {
       const enumValue = UserSex[key as keyof typeof UserSex];
       return {
         key: key,
         value: enumValue,
-        // label: this.displayKeyAsLabel ? key : enumValue // Uncomment if you keep displayKeyAsLabel
-        label: enumValue // Directly use the enum value as the label
+        label: enumValue
       };
     });
   }
@@ -87,7 +84,7 @@ export class UserSexSelectComponent implements ControlValueAccessor, OnInit {
 
   onSelectionChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
-    const value = selectElement.value as UserSex; // Cast to UserSex
+    const value = selectElement.value as UserSex;
 
     if (value && Object.values(UserSex).includes(value)) {
       this.selectedValue = value;

@@ -15,6 +15,8 @@ import {UserService} from '../user.service';
             <th scope="col">Nazwisko</th>
             <th scope="col">Wiek</th>
             <th scope="col">Płeć</th>
+            <th scope="col">Mama</th>
+            <th scope="col">Tata</th>
             <th scope="col">Dzieci</th>
           </tr>
           </thead>
@@ -26,9 +28,11 @@ import {UserService} from '../user.service';
                 <td>{{ user.lastName }}</td>
                 <td>{{ user.age }}</td>
                 <td>{{ user.sex }}</td>
+                <td>{{ getFullName(user.mother) }}</td>
+                <td>{{ getFullName(user.father) }}</td>
                 <td>
                   @for (child of user.children; track child.id) {
-                    {{ child.id + ' ' + child.firstName + ' ' + child.lastName + ' ' + child.age + ' |' }}
+                    {{ child.id + ' ' + getFullName(child) + ' ' + child.age + ' |' }}
                   }
                 </td>
               </tr>
@@ -50,5 +54,9 @@ export class UserListComponent implements OnInit {
     this.userService.findAll().subscribe(data => {
       this.users = data;
     });
+  }
+
+  getFullName(user: User): string {
+    return user ? user.firstName + ' ' + user.lastName : '';
   }
 }

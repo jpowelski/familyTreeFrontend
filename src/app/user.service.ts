@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {User} from './user';
 import {Observable} from 'rxjs';
+import {UserDto} from './user-form/userDto';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,11 @@ export class UserService {
     return this.http.get<User[]>(this.usersUrl);
   }
 
-  public save(user: User): Observable<User> {
+  public findAllFiltered(): Observable<User[]> {
+    return this.http.post<User[]>(this.usersUrl + "/filter", {});
+  }
+
+  public save(user: UserDto): Observable<User> {
     return this.http.post<User>(this.usersUrl, user);
   }
 }
